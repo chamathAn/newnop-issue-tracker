@@ -6,6 +6,7 @@ import { IssueTable } from '@/components/issues/IssueTable';
 import { IssueFilters } from '@/components/issues/IssueFilters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/common/Pagination';
+import { ExportButton } from '@/components/common/ExportButton';
 import { useIssueStore } from '@/stores/issueStore';
 import { useIssues } from '@/hooks/useIssues';
 
@@ -28,8 +29,11 @@ export function IssuesPage() {
         </Button>
       </div>
 
-      <div className="mb-4">
-        <IssueFilters />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-4">
+        <div className="flex-1 w-full">
+          <IssueFilters />
+        </div>
+        <ExportButton />
       </div>
 
       {isLoading ? (
