@@ -21,24 +21,25 @@ export function DashboardPage() {
   const [recentIssues, setRecentIssues] = useState<Issue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const results = await Promise.all(
-          STATUSES.map((status) => issuesApi.getIssues({ status, limit: 1, page: 1 }))
-        );
-        const newCounts = {} as Record<IssueStatus, number>;
-        STATUSES.forEach((status, i) => {
-          newCounts[status] = results[i].total;
-        });
-        setCounts(newCounts);
+  const fetchStats = async () => {
+    try {
+      const results = await Promise.all(
+        STATUSES.map((status) => issuesApi.getIssues({ status, limit: 1, page: 1 }))
+      );
+      const newCounts = {} as Record<IssueStatus, number>;
+      STATUSES.forEach((status, i) => {
+        newCounts[status] = results[i].total;
+      });
+      setCounts(newCounts);
 
-        const recent = await issuesApi.getIssues({ status: 'open', limit: 5, page: 1 });
-        setRecentIssues(recent.issues);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      const recent = await issuesApi.getIssues({ status: 'open', limit: 5, page: 1 });
+      setRecentIssues(recent.issues);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     void fetchStats();
   }, []);
 
@@ -74,7 +75,7 @@ export function DashboardPage() {
       {isLoading ? (
         <Skeleton className="h-48 rounded-md" />
       ) : recentIssues.length > 0 ? (
-        <IssueTable issues={recentIssues} />
+        <IssueTable issues={recentIssues} onDelete={fetchStats} />
       ) : (
         <p className="text-muted-foreground text-sm">No open issues. Great work!</p>
       )}

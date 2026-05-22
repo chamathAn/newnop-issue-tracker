@@ -13,9 +13,10 @@ import type { Issue } from '@/types';
 
 interface IssueTableProps {
   issues: Issue[];
+  onDelete?: () => void;
 }
 
-export function IssueTable({ issues }: IssueTableProps) {
+export function IssueTable({ issues, onDelete }: IssueTableProps) {
   const deleteIssue = useIssueStore((s) => s.deleteIssue);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -24,6 +25,7 @@ export function IssueTable({ issues }: IssueTableProps) {
     try {
       await deleteIssue(deleteTarget);
       toast.success('Issue deleted');
+      onDelete?.();
     } catch {
       toast.error('Failed to delete issue');
     } finally {
