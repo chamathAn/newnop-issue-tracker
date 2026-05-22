@@ -10,7 +10,7 @@ const app = express();
 
 const corsOrigins =
   process.env.NODE_ENV === 'production'
-    ? ['https://your-production-domain.com']
+    ? ['newnop-issue-tracker-puce.vercel.app']
     : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8000'];
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
