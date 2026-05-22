@@ -8,8 +8,11 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-
-app.use(cors({ origin: "newnop-issue-tracker-puce.vercel.app", credentials: true }));
+const corsOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://newnop-issue-tracker-puce.vercel.app/']
+    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8000'];
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
