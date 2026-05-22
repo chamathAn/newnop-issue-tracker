@@ -9,7 +9,7 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 const corsOrigins =['newnop-issue-tracker-puce.vercel.app']
-app.use(cors({ origin: corsOrigins, credentials: true }));
+app.use(cors({  credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
