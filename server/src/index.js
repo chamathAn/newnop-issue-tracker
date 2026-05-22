@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
 const issuesRoutes = require('./routes/issues.routes');
 const usersRoutes = require('./routes/users.routes');
@@ -9,7 +8,11 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-app.use(cors({ origin: process.env.NODE_ENV === 'production' ? false : 'http://localhost:5173', credentials: true }));
+const corsOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://your-production-domain.com']
+    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8000'];
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,7 +23,4 @@ app.use('/api/issues', issuesRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-
-connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

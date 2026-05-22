@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdIssues  Issue[] @relation("CreatedBy")
+  assignedIssues Issue[] @relation("AssignedTo")
+}
+
+model Issue {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  status      String   @default("open")
+  priority    String
+  severity    String?
+  assigneeId  String?  @db.ObjectId
+  createdById String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignee  User?  @relation("AssignedTo", fields: [assigneeId], references: [id])
+  createdBy User   @relation("CreatedBy", fields: [createdById], references: [id])
+}
