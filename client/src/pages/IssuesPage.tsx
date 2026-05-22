@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { IssueTable } from '@/components/issues/IssueTable';
 import { IssueFilters } from '@/components/issues/IssueFilters';
-import { Skeleton } from '@/components/ui/skeleton';
+import { TableSkeleton } from '@/components/common/LoadingSkeleton';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Pagination } from '@/components/common/Pagination';
 import { ExportButton } from '@/components/common/ExportButton';
 import { useIssueStore } from '@/stores/issueStore';
@@ -13,6 +14,7 @@ import { useIssues } from '@/hooks/useIssues';
 export function IssuesPage() {
   useIssues();
   const { issues, isLoading, filters } = useIssueStore();
+  const navigate = useNavigate();
 
   const hasActiveFilters =
     filters.search || filters.status || filters.priority || filters.severity;
@@ -37,25 +39,23 @@ export function IssuesPage() {
       </div>
 
       {isLoading ? (
-        <Skeleton className="h-64 rounded-md" />
+        <TableSkeleton />
       ) : issues.length > 0 ? (
         <>
           <IssueTable issues={issues} />
           <Pagination />
         </>
+      ) : hasActiveFilters ? (
+        <EmptyState
+          title="No issues found"
+          description="No issues match your current filters. Try adjusting or clearing your search."
+        />
       ) : (
-        <div className="text-center py-16">
-          <p className="text-muted-foreground mb-4">
-            {hasActiveFilters
-              ? 'No issues match your filters.'
-              : 'No issues yet.'}
-          </p>
-          {!hasActiveFilters && (
-            <Button asChild>
-              <Link to="/issues/new">Create your first issue</Link>
-            </Button>
-          )}
-        </div>
+        <EmptyState
+          title="No issues yet"
+          description="Create your first issue to get started tracking bugs and tasks."
+          action={{ label: 'Create issue', onClick: () => navigate('/issues/new') }}
+        />
       )}
     </PageWrapper>
   );
