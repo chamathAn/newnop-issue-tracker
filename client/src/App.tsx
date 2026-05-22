@@ -1,10 +1,21 @@
+import { useEffect } from 'react';
+import { Toaster } from '@/components/ui/sonner';
+import { AppRouter } from '@/router/AppRouter';
+import { useAuthStore } from '@/stores/authStore';
 import './index.css';
 
 function App() {
+  const initFromStorage = useAuthStore((s) => s.initFromStorage);
+
+  useEffect(() => {
+    initFromStorage();
+  }, [initFromStorage]);
+
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <p className="text-muted-foreground">Issue Tracker — initializing...</p>
-    </div>
+    <>
+      <AppRouter />
+      <Toaster richColors position="top-right" />
+    </>
   );
 }
 
