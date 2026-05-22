@@ -1,13 +1,16 @@
 const express = require('express');
-const User = require('../models/User');
+const prisma = require('../config/prisma');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
 
 router.get('/', auth, async (req, res, next) => {
   try {
-    const users = await User.find().select('name email').sort('name');
-    res.json(users);
+    const users = await prisma.user.findMany({
+      select: { id: true, name: true, email: true },
+      orderBy: { name: 'asc' },
+    });
+    res.json(users.map(({ id, ...rest }) => ({ _id: id, ...rest })));
   } catch (err) {
     next(err);
   }
