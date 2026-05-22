@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://newnop-issue-tracker.onrender.com//api',
+  baseURL: 'https://newnop-issue-tracker.onrender.com/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
