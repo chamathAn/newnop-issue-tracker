@@ -10,7 +10,7 @@ const app = express();
 
 const corsOrigins =
   process.env.NODE_ENV === 'production'
-    ? ['newnop-issue-tracker-puce.vercel.app']
+    ? ['newnop-issue-tracker-g797mogtn-chamath-anjulas-projects.vercel.app']
     : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8000'];
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
