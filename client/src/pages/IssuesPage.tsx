@@ -1,22 +1,24 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { IssueTable } from '@/components/issues/IssueTable';
+import { IssueFilters } from '@/components/issues/IssueFilters';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Pagination } from '@/components/common/Pagination';
 import { useIssueStore } from '@/stores/issueStore';
+import { useIssues } from '@/hooks/useIssues';
 
 export function IssuesPage() {
-  const { issues, isLoading, fetchIssues } = useIssueStore();
+  useIssues();
+  const { issues, isLoading, filters } = useIssueStore();
 
-  useEffect(() => {
-    void fetchIssues();
-  }, [fetchIssues]);
+  const hasActiveFilters =
+    filters.search || filters.status || filters.priority || filters.severity;
 
   return (
     <PageWrapper title="Issues">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Issues</h1>
         <Button asChild>
           <Link to="/issues/new">
@@ -26,16 +28,29 @@ export function IssuesPage() {
         </Button>
       </div>
 
+      <div className="mb-4">
+        <IssueFilters />
+      </div>
+
       {isLoading ? (
         <Skeleton className="h-64 rounded-md" />
       ) : issues.length > 0 ? (
-        <IssueTable issues={issues} />
+        <>
+          <IssueTable issues={issues} />
+          <Pagination />
+        </>
       ) : (
         <div className="text-center py-16">
-          <p className="text-muted-foreground mb-4">No issues yet.</p>
-          <Button asChild>
-            <Link to="/issues/new">Create your first issue</Link>
-          </Button>
+          <p className="text-muted-foreground mb-4">
+            {hasActiveFilters
+              ? 'No issues match your filters.'
+              : 'No issues yet.'}
+          </p>
+          {!hasActiveFilters && (
+            <Button asChild>
+              <Link to="/issues/new">Create your first issue</Link>
+            </Button>
+          )}
         </div>
       )}
     </PageWrapper>
